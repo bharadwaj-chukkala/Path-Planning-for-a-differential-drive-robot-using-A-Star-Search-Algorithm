@@ -1,16 +1,15 @@
 # Path-Planning-for-a-differential-drive-robot-using-A-Star-Search-Algorithm
 
-ENPM 661 Project 3 Phase 2
-**Description**: Adding differential drive constraints to the path planning algorithm for a rigid robot which uses A Star Search to find the goal node in the Configuration Space with Obstacles
-
-| Team Members                   |
-| ------------------------------ |
-| Bharadwaj Chukkala             |
-| Joseph Pranadeer Reddy Katakam |
-
 ## Introduction
 
 The goal of this project is to implement a path planning algorithm for a rigid robot which uses A Star Search to find the goal node in the Configuration Space with Obstacles. The robot is a differential drive robot. In this case, a turtlebot is used.
+
+## Project Personnel
+
+| **Team Members**                   |
+| ------------------------------ |
+| Bharadwaj Chukkala             |
+| Joseph Pranadeer Reddy Katakam |
 
 ## Dependencies
 
