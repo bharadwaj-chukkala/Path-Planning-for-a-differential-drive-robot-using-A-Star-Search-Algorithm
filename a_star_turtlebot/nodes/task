@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+
+import rospy
+from astar_proj3_part2 import *
+import math
+import time
+import numpy as np
+import tf
+
+from geometry_msgs.msg import Twist
+from tf.transformations import euler_from_quaternion
+
+class BotController(object):
+
+    def __init__(self):
+        self._velocity_publisher = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
+        self._robot_name = 'burger'
+        self._velocity_msg = Twist()
+        self._tf_listener = tf.TransformListener()
+
+    def wait(self):
+        self._tf_listener.waitForTransform('/odom', '/base_footprint',
+                                            rospy.Time(), rospy.Duration(500))
+
+
+    def get_transform(self):
+        (trans, rot) = self._tf_listener.lookupTransform(
+                         '/odom', '/base_footprint', rospy.Time(0))
+        
+        x, y, z = trans
+        r, p, yaw = euler_from_quaternion(rot)
+
+        return x, y, yaw
+
+    def cmd_vel(self, linear, angular):
+        velocity = Twist()
+        velocity.linear.x = linear
+        velocity.angular.z = angular
+        self._velocity_publisher.publish(velocity)
+
+
+
+
+def main():
+    rospy.init_node('jkvhjvgjvjggjv')
+    rospy.loginfo('Press Ctrl c to exit')
+
+    width = 10
+    height = 10
+    
+
+##---------------------------------------------------------------------------------
+    
+    # RPM1 = 10
+    # RPM2 = 10
+    s_x = 1
+    s_y = 1
+    g_x = 9.5
+    g_y = 9.5
+    s_t = 30
+    robot_radius  = 0.038
+    # clearance = 0.02
+    clearance = input("\nEnter obstacle clearance for robot ")
+    clearance = float(clearance)
+    
+
+    Rpms = input("Enter left wheel and right wheel RPMs")
+    RPM1,RPM2 = Rpms.split()
+    RPM1 = int(RPM1)
+    RPM2 = int(RPM2)
+    
+
+    # start_coordinates = input("Enter start coordinates: ")
+    # s_x, s_y = start_coordinates.split()
+    # s_x = int(s_x)
+    # s_y = int(s_y)
+    
+    
+    # goal_coordinates = input("Enter goal coordinates: ")
+    # g_x, g_y = goal_coordinates.split()
+    # g_x = int(g_x)
+    # g_y = int(g_y)
+    
+
+    # if not Valid_move(s_x, s_y, robot_radius,clearance):
+    #     print("In valid start node or in Obstacle space")
+    #     exit(-1)
+        
+    # if not Valid_move(g_x, g_y, robot_radius,clearance):
+    #     print("In valid goal node or in Obstacle space")
+    #     exit(-1)
+    
+    # start_theta = input("Enter Orientation of the robot at start node: ")
+    # s_t = int(start_theta)
+    
+    
+    # if not validorient(s_t):
+    #     print("Orientation has to be a multiple of 30")
+    #     exit(-1)
+
+    
+    
+    timer_start = time.time()
+
+    c2g = dist((s_x,s_y), (g_x, g_y))
+    total_cost =  c2g
+    start_node = Node(s_x, s_y,-1,s_t,0,0,0,0,c2g,total_cost)
+    goal_node = Node(g_x, g_y, -1,0,0,0,0,c2g,0,total_cost)
+
+    flag,Node_List,Path_List = A_star_algorithm(start_node, goal_node,RPM1,RPM2,robot_radius,clearance)
+                    
+    if (flag)==1:
+        x_path,y_path,theta_path,RPM_Left,RPM_Right = Backtrack(goal_node)
+    else:
+        print("not found")
+        exit(-1)
+    
+    timer_start = time.time()
+
+    c2g = dist((s_x,s_y), (g_x, g_y))
+    total_cost =  c2g
+    start_node = Node(s_x, s_y,-1,s_t,0,0,0,0,c2g,total_cost)
+    goal_node = Node(g_x, g_y, -1,0,0,0,0,c2g,0,total_cost)
+
+    flag,Node_List,Path_List = A_star_algorithm(start_node, goal_node,RPM1,RPM2,robot_radius,clearance)
+                    
+    if (flag)==1:
+        x_path,y_path,theta_path,RPM_Left,RPM_Right = Backtrack(goal_node)
+    else:
+        print("not found")
+        exit(-1)
+
+
+    print('\n path found sucessfully')
+    print('\n waiting to publish cmd vel msgs')
+
+    rospy.sleep(10)
+
+    print('\n publishing msgs')
+    botcontroller = BotController()
+    botcontroller.wait()
+    rate = rospy.Rate(1)
+
+    r = 0.038 #in metres
+    L = 0.354 #in metres
+    dt = 10
+    pi = math.pi
+
+    print (len(x_path))
+    print (theta_path)
+
+    for i in range(len(x_path)):
+        UL = RPM_Left[i]
+        UR = RPM_Right[i]
+
+        theta = theta_path[i]
+
+        pi = math.pi
+
+        UL = UL*2*pi/60
+        UR = UR*2*pi/60
+
+        thetan = 3.14 * theta / 180
+
+        theta_dot = (r / L) * (UR - UL) 
+
+        velocity_value = (r / 2) * (UL + UR)
+        velocity_value = velocity_value*10
+
+        xn, yn, yaw = botcontroller.get_transform()
+        yaw = (yaw)*180/np.pi
+        print(theta)
+        print (yaw)
+
+        diff = ((theta - yaw) + 180) % 360 - 180
+
+        print("velocity value: ", velocity_value, "theta_dot: ", theta_dot, "diff: ", diff)
+        botcontroller.cmd_vel(velocity_value, theta_dot + 0.005 * diff)
+        rate.sleep()
+
+    botcontroller.cmd_vel(0, 0)
+    print ('successfully reached')
+
+
+if __name__ == '__main__':
+    try: main()
+    except rospy.ROSInterruptException:
+        rospy.loginfo("Task terminated.")
+
+    
