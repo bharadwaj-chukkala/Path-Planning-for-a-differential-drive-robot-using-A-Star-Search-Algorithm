@@ -62,15 +62,15 @@ cd Path-Planning-for-a-differential-drive-robot-using-A-Star-Search-Algorithm
 
 ### Phase 2 Part 1
 
-This is the visualization of the path found by the A Star Search algorithm for a rigid robot which uses A Star Search to find the goal node in the Configuration Space with Obstacles. Here is the link to the video.
+This is the visualization of the path found by the A Star Search algorithm for a rigid robot which uses A Star Search to find the goal node in the Configuration Space with Obstacles. Click the below image to watch the video.
 
-[![Phase 2 Part 1](https://img.youtube.com/vi/4Z4Z4Z4Z4Z4/0.jpg)](https://drive.google.com/file/d/105u4m5jktIU5xoYhF-J1HIAQVPftdcAq/view?usp=share_link)
+[![Phase 2 Part 1](https://github.com/bharadwaj-chukkala/Path-Planning-for-a-differential-drive-robot-using-A-Star-Search-Algorithm/blob/main/outputs/P3P1.jpg)](https://drive.google.com/file/d/105u4m5jktIU5xoYhF-J1HIAQVPftdcAq/view?usp=share_link)
 
 ### Phase 2 Part 2
 
-This is the simulation of the above robot in Gazebo through ROS. Here is the link to the video.
+This is the simulation of the above robot in Gazebo through ROS. Click the below image to watch the video.
 
-[![Phase 2 Part 2](https://img.youtube.com/vi/4Z4Z4Z4Z4Z4/0.jpg)](https://drive.google.com/file/d/1tFrjVtalV8_ed-6tbaOr8Phx-Ovm0vvK/view?usp=share_link)
+[![Phase 2 Part 2](https://github.com/bharadwaj-chukkala/Path-Planning-for-a-differential-drive-robot-using-A-Star-Search-Algorithm/blob/main/outputs/P3P2.jpg)](https://drive.google.com/file/d/1tFrjVtalV8_ed-6tbaOr8Phx-Ovm0vvK/view?usp=share_link)
 
 ## Contact
 
